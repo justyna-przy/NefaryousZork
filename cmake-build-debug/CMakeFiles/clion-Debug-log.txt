@@ -1,0 +1,22 @@
+"C:\Program Files\JetBrains\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2023.3.4/bin/ninja/win/x64/ninja.exe" -G Ninja -S C:\Users\shado\QT\NefaryousGame -B C:\Users\shado\QT\NefaryousGame\cmake-build-debug
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR) 
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR) 
+Building designer components.
+-- PROJECT_SOURCE_DIR="C:/Users/shado/QT/NefaryousGame"
+-- PROJECT_VERSION_MAJOR="6"
+$(PROJECT_SOURCE_DIR)
+$(PROJECT_VERSION_MAJOR)
+CMake Warning (dev) at C:/Qt/6.7.0/mingw_64/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:3126 (message):
+  Qt policy QTP0001 is not set: ':/qt/qml/' is the default resource prefix
+  for QML modules.  Check https://doc.qt.io/qt-6/qt-cmake-policy-qtp0001.html
+  for policy details.  Use the qt_policy command to set the policy and
+  suppress this warning.
+
+Call Stack (most recent call first):
+  C:/Qt/6.7.0/mingw_64/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:468 (__qt_internal_setup_policy)
+  cmake-build-debug/_deps/ds-src/src/imports/utils/CMakeLists.txt:6 (qt6_add_qml_module)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring done (4.1s)
+-- Generating done (0.9s)
+-- Build files have been written to: C:/Users/shado/QT/NefaryousGame/cmake-build-debug

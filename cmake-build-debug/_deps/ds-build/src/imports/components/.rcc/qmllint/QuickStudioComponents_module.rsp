@@ -1,0 +1,12 @@
+-I
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml
+-I
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml
+-I
+C:/Qt/6.7.0/mingw_64/./qml
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/_deps/ds-build/src/imports/components/.rcc/qmake_QtQuick_Studio_Components.qrc
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/_deps/ds-build/src/imports/components/.rcc/QuickStudioComponents_raw_qml_0.qrc
+--module
+QtQuick.Studio.Components

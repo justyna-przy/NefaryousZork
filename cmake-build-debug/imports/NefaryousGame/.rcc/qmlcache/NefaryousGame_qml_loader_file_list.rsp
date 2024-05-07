@@ -1,0 +1,8 @@
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/imports/NefaryousGame/.rcc/qmake_NefaryousGame.qrc
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/imports/NefaryousGame/.rcc/NefaryousGame_raw_qml_0.qrc
+/qt/qml/NefaryousGame/Constants.qml
+/qt/qml/NefaryousGame/DirectoryFontLoader.qml
+/qt/qml/NefaryousGame/EventListModel.qml
+/qt/qml/NefaryousGame/EventListSimulator.qml

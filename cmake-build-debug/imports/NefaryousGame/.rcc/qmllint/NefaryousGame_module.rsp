@@ -1,0 +1,12 @@
+-I
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml
+-I
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml
+-I
+C:/Qt/6.7.0/mingw_64/./qml
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/imports/NefaryousGame/.rcc/qmake_NefaryousGame.qrc
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/imports/NefaryousGame/.rcc/NefaryousGame_raw_qml_0.qrc
+--module
+NefaryousGame

@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="/qt/qml/NefaryousGame/">
+    <file alias="Constants.qml">C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/Constants.qml</file>
+    <file alias="DirectoryFontLoader.qml">C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/DirectoryFontLoader.qml</file>
+    <file alias="EventListModel.qml">C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/EventListModel.qml</file>
+    <file alias="EventListSimulator.qml">C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/EventListSimulator.qml</file>
+  </qresource>
+</RCC>
+

@@ -1,0 +1,17 @@
+--bare
+-I
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml
+-I
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml
+-I
+C:/Qt/6.7.0/mingw_64/./qml
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/imports/NefaryousGame/.rcc/qmake_NefaryousGame.qrc
+--resource
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/imports/NefaryousGame/.rcc/NefaryousGame_raw_qml_0.qrc
+C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/Constants.qml
+C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/DirectoryFontLoader.qml
+C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/EventListModel.qml
+C:/Users/shado/QT/NefaryousGame/imports/NefaryousGame/EventListSimulator.qml
+--json
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/NefaryousGame_qmllint.json

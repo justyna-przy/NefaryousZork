@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/qt/qml/Main">C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml/Main</file>
+
+  </qresource>
+</RCC>

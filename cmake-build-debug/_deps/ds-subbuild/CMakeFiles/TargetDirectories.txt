@@ -1,0 +1,3 @@
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/_deps/ds-subbuild/CMakeFiles/ds-populate.dir
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/_deps/ds-subbuild/CMakeFiles/edit_cache.dir
+C:/Users/shado/QT/NefaryousGame/cmake-build-debug/_deps/ds-subbuild/CMakeFiles/rebuild_cache.dir
