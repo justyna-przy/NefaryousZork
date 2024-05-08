@@ -17,6 +17,6 @@ Call Stack (most recent call first):
   cmake-build-debug/_deps/ds-src/src/imports/utils/CMakeLists.txt:6 (qt6_add_qml_module)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
--- Configuring done (4.1s)
--- Generating done (0.9s)
+-- Configuring done (4.9s)
+-- Generating done (1.7s)
 -- Build files have been written to: C:/Users/shado/QT/NefaryousGame/cmake-build-debug

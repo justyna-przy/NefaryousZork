@@ -19,7 +19,12 @@ qt_add_executable(NefaryousGameApp src/main.cpp
         src/Exit.cpp
         src/Exit.h
         src/Room.cpp
-        src/Room.h)
+        src/Room.h
+        src/Game.h
+        src/Game.h
+        src/Game.cpp
+        src/Game.cpp
+        src/Game.cpp)
 
 qt_add_resources(NefaryousGameApp "configuration"
     PREFIX "/"

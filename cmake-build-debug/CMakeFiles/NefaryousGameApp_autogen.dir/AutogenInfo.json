@@ -713,6 +713,12 @@
 			null
 		],
 		[
+			"C:/Users/shado/QT/NefaryousGame/src/Game.h",
+			"MU",
+			"UVLADIE3JM/moc_Game.cpp",
+			null
+		],
+		[
 			"C:/Users/shado/QT/NefaryousGame/src/Room.h",
 			"MU",
 			"UVLADIE3JM/moc_Room.cpp",
@@ -819,6 +825,7 @@
 	[
 		[ "C:/Users/shado/QT/NefaryousGame/src/Entity.cpp", "MU", null ],
 		[ "C:/Users/shado/QT/NefaryousGame/src/Exit.cpp", "MU", null ],
+		[ "C:/Users/shado/QT/NefaryousGame/src/Game.cpp", "MU", null ],
 		[ "C:/Users/shado/QT/NefaryousGame/src/Room.cpp", "MU", null ],
 		[ "C:/Users/shado/QT/NefaryousGame/src/main.cpp", "MU", null ]
 	],

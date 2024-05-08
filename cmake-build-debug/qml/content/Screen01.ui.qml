@@ -9,6 +9,7 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 6.5
 import QtQuick.Controls 6.5
 import NefaryousGame
+import com.nefaryous.game 1.0
 
 Rectangle {
     id: rectangle
@@ -16,17 +17,27 @@ Rectangle {
     height: Constants.height
     color: "#36122a"
 
+    Game {
+        id: game
+        Component.onCompleted: {
+            console.log("Game initialized")
+        }
+    }
+
+    property var exitsList: game.currentRoom.exits
+
     TextArea {
         id: textArea
         x: 0
         y: 0
-        width: 1000
+        width: 900
         height: 544
         color: "#f5f4d1"
+        text: game.gameLog
+        readOnly: true
         wrapMode: Text.WordWrap
         activeFocusOnPress: false
         cursorVisible: true
-        readOnly: true
         padding: 30
         textMargin: 20
         font.family: "Verdana"
@@ -62,71 +73,26 @@ Rectangle {
         rows: 2
         columns: 2
 
-        Button {
-            id: button
-            width: 375
-            height: 80
-            text: qsTr("Option")
-            font.family: "Verdana"
-            font.pointSize: 16
-            background: Rectangle {
-                color: "#9e1266"
-                radius: 10
-            }
+        Repeater {
+            model: exitsList
 
-            flat: false
-            highlighted: false
-            scale: 1
-        }
-
-        Button {
-            id: button1
-            width: 375
-            height: 80
-            text: qsTr("Option")
-            scale: 1
-            icon.color: "#590c4c"
-            highlighted: false
-            font.pointSize: 16
-            font.family: "Verdana"
-            flat: false
-            background: Rectangle {
-                color: "#9e1266"
-                radius: 10
-            }
-        }
-
-        Button {
-            id: button2
-            width: 375
-            height: 80
-            text: qsTr("Option")
-            scale: 1
-            icon.color: "#590c4c"
-            highlighted: false
-            font.pointSize: 16
-            font.family: "Verdana"
-            flat: false
-            background: Rectangle {
-                color: "#9e1266"
-                radius: 10
-            }
-        }
-
-        Button {
-            id: button3
-            width: 375
-            height: 80
-            text: qsTr("Option")
-            scale: 1
-            icon.color: "#590c4c"
-            highlighted: false
-            font.pointSize: 16
-            font.family: "Verdana"
-            flat: false
-            background: Rectangle {
-                color: "#9e1266"
-                radius: 10
+            Button {
+                id: button
+                width: 375
+                height: 80
+                text: modelData.name || "No exit" // Correctly display the name of the exit
+                onClicked: {
+                    game.moveToRoom(modelData.destination) // Correctly use the destination property
+                }
+                font.family: "Verdana"
+                font.pointSize: 16
+                background: Rectangle {
+                    color: "#9e1266"
+                    radius: 10
+                }
+                flat: false
+                highlighted: false
+                scale: 1
             }
         }
     }
