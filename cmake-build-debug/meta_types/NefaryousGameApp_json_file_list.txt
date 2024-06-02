@@ -1,3 +1,0 @@
-C:/Users/shado/QT/NefaryousGame/cmake-build-debug/NefaryousGameApp_autogen/include/../UVLADIE3JM/moc_Exit.cpp.json
-C:/Users/shado/QT/NefaryousGame/cmake-build-debug/NefaryousGameApp_autogen/include/../UVLADIE3JM/moc_Game.cpp.json
-C:/Users/shado/QT/NefaryousGame/cmake-build-debug/NefaryousGameApp_autogen/include/../UVLADIE3JM/moc_Room.cpp.json

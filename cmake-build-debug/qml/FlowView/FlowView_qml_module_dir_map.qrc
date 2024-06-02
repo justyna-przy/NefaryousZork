@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/qt-project.org/imports/FlowView">C:/Users/shado/QT/NefaryousGame/cmake-build-debug/qml/FlowView</file>
-
-  </qresource>
-</RCC>
