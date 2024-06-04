@@ -9,11 +9,12 @@
 
 
 
-Room::Room(string name, string description, QObject *parent = nullptr) : QObject(parent),
+Room::Room(string name, string description, string imageName, QObject *parent = nullptr) : QObject(parent),
     // Moving it to the entity constructor instead of copying it!
     Entity(std::move(name), std::move(description))
 {
-    type = ROOM;
+    this->roomImage = QString::fromStdString("qrc:/qt/qml/content/images/" + imageName);
+    this->type = ROOM;
 }
 
 Room::~Room() {
@@ -28,37 +29,28 @@ void Room::addExit(Exit* exit) {
     emit exitsChanged();
 }
 
-QVector<QObject*> Room::getExits() const{
-    qDebug() << "Accessing exits, count:" << exits.count();
+void Room::addItem(Item *item) {
+    roomItems.push_back(item);
+    emit roomItemsChanged();
+}
+
+
+QVector<QObject*> Room::getExits() const {
     QVector<QObject*> list;
     for (const QPointer<Exit>& exit : exits) {
         if (exit) {
             list.append(exit);
         }
     }
-    qDebug() << "returning list";
     return list;
 }
 
-
-
-
-
-
-
-//
-//void Room::addState(const QString& state, const QString& imagePath) {
-//    roomImages[state] = QPixmap(imagePath);
-//    currentState = state;
-//}
-
-//
-//void Room::setState(const QString& state) {
-//    if (roomImages.contains(state)) {
-//        currentState = state;
-//    }
-//}
-
-//QPixmap Room::getCurrentImage() {
-//    return roomImages.value(currentState, QPixmap()); // returns and empty QPixmap if not found
-//}
+QVector<QObject*> Room::getRoomItems() {
+    QVector<QObject*> list;
+    for (const QPointer<Item>& item : roomItems) {
+        if (item) {
+            list.append(item);
+        }
+    }
+    return list;
+}

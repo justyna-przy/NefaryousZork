@@ -5,22 +5,18 @@
 #include <QQmlApplicationEngine>
 #include <iostream>
 #include <QQmlContext>
+#include <QQuickWindow>
+#include "../Model/Exit.h"
+#include "../Model/Room.h"
+#include "../Model/InventoryBase.h"
+#include "Game.h"
+#include "../Model/Player.h"
 
-#include "src/app_environment.h"
-#include "src/import_qml_components_plugins.h"
-#include "src/import_qml_plugins.h"
-#include "src/Model/Room.h"
-#include "src/Controller/Game.h"
-#include "src/Model/Item.h"
-#include "src/Model/Weapon.h"
 
-class Game;
+Game game;
 
 int main(int argc, char *argv[])
 {
-    Weapon* waepon = new Weapon("Sword", "Sharp!", 3, "cat.jpg");
-    waepon->use();
-
     QGuiApplication app(argc, argv);
 
     constexpr const char* uri = "com.nefaryous.game";
@@ -31,17 +27,17 @@ int main(int argc, char *argv[])
     qmlRegisterType<Game>(uri, versionMajor, versionMinor, qmlName);
     qmlRegisterType<Exit>("com.nefaryous.game", 1, 0, "Exit");
     qmlRegisterType<Room>("com.nefaryous.game", 1, 0, "Room");
-
+    qmlRegisterUncreatableType<InventoryBase>("com.nefaryous.game", 1, 0, "InventoryBase",
+                                              QStringLiteral("InventoryBase cannot be created in QML"));
     QQmlApplicationEngine engine;
 
-    // Create an instance of Game
-    Game myGame;
 
-    // Expose the instance to QML
-    engine.rootContext()->setContextProperty("game", &myGame);
+
+    engine.rootContext()->setContextProperty("game", &game);
+    engine.rootContext()->setContextProperty("player", &Player::instance());
+
 
     const QUrl url(u"qrc:/qt/qml/Main/main.qml"_qs);
-//    qDebug() << "Image path:" << url << "/images/pxArt.png";
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
                 if (!obj && url == objUrl)
@@ -52,6 +48,12 @@ int main(int argc, char *argv[])
 
     if (engine.rootObjects().isEmpty())
         return -1;
+
+    QQuickWindow *window = qobject_cast<QQuickWindow *>(engine.rootObjects().first());
+    if (window) {
+        window->setMinimumSize(QSize(740, 740));
+        window->setMaximumSize(QSize(740, 740));
+    }
 
     return app.exec();
 }

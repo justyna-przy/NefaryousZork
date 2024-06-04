@@ -1,14 +1,8 @@
-
-/*
-This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
-It is supposed to be strictly declarative and only uses a subset of QML. If you edit
-this file manually, you might introduce QML code that is not supported by Qt Design Studio.
-Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
-*/
 import QtQuick 6.5
 import QtQuick.Controls 6.5
-import NefaryousGame
 import com.nefaryous.game 1.0
+
+
 
 Rectangle {
     id: rectangle
@@ -16,51 +10,108 @@ Rectangle {
     height: 740
     color: "#36122d"
 
+    property string actionState: "main"
+
+    function resetStateToMain() {
+        console.log("Resetting state to main");
+        actionState = "main";
+    }
+
     Game {
         id: game
         Component.onCompleted: {
-            console.log("Game initialized")
+            console.log("Game initialized");
+            game.resetUIState.connect(resetStateToMain)
         }
     }
 
+
+
     property var exitsList: game.currentRoom.exits
+    property var inventory: game.inventory
+    property var player: game.player
+
+    function calculateHealthWidth() {
+        return 240 * (game.player.currentHealth / 40);
+    }
+
+    FontLoader {
+        id: gothic
+        source: "qrc:/qt/qml/content/fonts/gothic.ttf"
+    }
+
 
     Grid {
-        id: grid
+        id: placeholderGrid
         x: 62
         y: 598
         width: 616
         height: 107
         rowSpacing: 15
         columnSpacing: 15
-
         verticalItemAlignment: Grid.AlignBottom
         horizontalItemAlignment: Grid.AlignLeft
         rows: 2
         columns: 2
 
-
         Repeater {
-            model: exitsList
-
-            Button {
-                id: button
+            model: 4  // Four placeholders for the four grid slots
+            delegate: Rectangle {
                 width: 300
                 height: 45
-                text: modelData.name || "No exit" // Correctly display the name of the exit
+                color: "#45163a"
+                radius: 3
+            }
+        }
+    }
+    Grid {
+        id: actionGrid
+        x: 62
+        y: 598
+        width: 616
+        height: 107
+        rowSpacing: 15
+        columnSpacing: 15
+        verticalItemAlignment: Grid.AlignBottom
+        horizontalItemAlignment: Grid.AlignLeft
+        rows: 2
+        columns: 2
+
+        Repeater {
+            model: actionState === "main" ? ["Leave Room", "Pick up Item", "Fight Enemy", "Use Item"] :
+                ["Back"].concat(actionState === "exits" ? exitsList :
+                        actionState === "items" ? game.currentRoom.roomItems : [])
+            delegate: Button {
+                text:   modelData === "Back" ? "Back" :
+                        actionState === "main" ? modelData :
+                        actionState === "exits" ? modelData.name :
+                        actionState === "items" ? modelData.name : "Undefined"
                 onClicked: {
-                    game.moveToRoom(modelData.destination) // Correctly use the destination property
+                    if (modelData === "Back") {
+                        actionState = "main";
+                    } else if (actionState === "main") {
+                        if (modelData === "Leave Room") {
+                            actionState = "exits";
+                        } else if (modelData === "Pick up Item") {
+                            game.checkRoomForItems();
+                            actionState = "items";
+                        }
+                    } else if (actionState === "exits") {
+                        game.moveToRoom(modelData.destination);
+                        actionState = "main";
+                    } else if (actionState === "items") {
+                        game.pickUpItem(modelData.name);
+                        actionState = "main";
+                    }
                 }
-                font.family: "Verdana"
-                font.pointSize: 14
+                width: 300
+                height: 45
+                font.family: gothic.name
+                font.pointSize: 20
                 background: Rectangle {
-                    color: "#9e1266"
+                    color: modelData === "Back" ? "#b13e53" : "#9e1266"  // Red for back, different color for others
                     radius: 3
                 }
-
-                flat: false
-                highlighted: false
-                scale: 1
             }
         }
     }
@@ -71,34 +122,45 @@ Rectangle {
         y: 0
         width: 740
         height: 381
-        source: "qrc:/qt/qml/content/images/pxArt.png"
+        source: game.currentRoom.roomImage
         fillMode: Image.Stretch
 
+
+        Text {
+            id: roomNameText
+            text: game.currentRoom.name
+            font.family: gothic.name
+            font.pointSize: 22
+            color: "#f5f4d1"
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: 12
+            anchors.leftMargin: 20
+        }
+
+
         Rectangle {
-            // Main background of the inventory
-            width: 264
-            height: 53
-            color: "#45193d" // Dark gray background
+            width: 240
+            height: 60
+            color: "#45193d"
             border.color: "#7a276d"
             border.width: 3
-            anchors.verticalCenterOffset: 164
-            anchors.horizontalCenterOffset: -238
+            anchors.verticalCenterOffset: 160
+            anchors.horizontalCenterOffset: -250
             anchors.centerIn: parent
 
-            Grid{
-                columns: 5
+            Grid {
+                columns: 4
                 width: parent.width
                 height: parent.height
                 anchors.verticalCenterOffset: 0
                 anchors.horizontalCenterOffset: 0
                 anchors.centerIn: parent
 
-
                 Repeater {
-                    model: 5
+                    model: 4
 
                     Rectangle {
-                        // Each slot in the inventory
                         width: parent.height
                         height: parent.height
                         color: "#45193d"
@@ -107,9 +169,8 @@ Rectangle {
 
                         Image {
                             anchors.fill: parent
-                            // source: index < inventoryModel.count ? inventoryModel.get(index).icon : ""
-                            source: "qrc:/qt/qml/content/images/cat.jpg"
-                            // visible: index < inventoryModel.count
+                            source: index < game.inventory.count ? game.inventory.getItem(index).imageName : ""
+                            visible: index < game.inventory.count
                             fillMode: Image.PreserveAspectFit
                         }
                     }
@@ -117,12 +178,35 @@ Rectangle {
             }
         }
 
-        // ListModel {
-        //     id: inventoryModel
-        //     ListElement { icon: "sword.png" }
-        //     ListElement { icon: "shield.png" }
-        // }
+
+        Rectangle {
+            anchors.verticalCenterOffset: 117
+            anchors.horizontalCenterOffset: -250
+            anchors.centerIn: parent
+            width: 240
+            height: 30
+            color: "transparent"
+            Rectangle {
+                anchors.left: parent.left
+                id: healthBarContainer
+                width: calculateHealthWidth()
+                height: 30
+                clip: true
+                color: "transparent"
+
+                Image {
+                    id: heartsImage
+                    source: "qrc:/qt/qml/content/images/hearts.png"
+                    width: 240
+                    height: parent.height
+                    fillMode: Image.PreserveAspectFit
+                }
+            }
+        }
     }
+
+
+
 
     Rectangle {
         id: rectangle1
@@ -133,16 +217,14 @@ Rectangle {
         color: "#36122d"
         border.width: 0
 
-
-        // Top border
         Rectangle {
             width: parent.width
             height: 3
             color: "#45193d"
-            border.color: "#45193d"  // Adjust the height to change the border thickness
+            border.color: "#45193d"
             anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
 
         ScrollView {
             id: scrollView
@@ -170,22 +252,18 @@ Rectangle {
                 font.pointSize: 13
                 placeholderText: qsTr("Text Area")
                 clip: true
-                // Ensures that the initial scroll to the bottom is attempted only after the TextArea component has been fully created.
                 Component.onCompleted: {
                     scrollView.contentItem.contentY = scrollView.contentItem.contentHeight - scrollView.height
                 }
                 onTextChanged: {
-                    // Delaying the execution to ensure flickableItem is available and layout is updated
                     Qt.callLater(function() {
                         scrollView.contentItem.contentY = scrollView.contentItem.contentHeight - scrollView.height;
                     });
                 }
             }
         }
+
+
+
     }
-    states: [
-        State {
-            name: "clicked"
-        }
-    ]
 }

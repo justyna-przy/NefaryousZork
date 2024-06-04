@@ -10,21 +10,37 @@ union ItemProperty {
     const char* color;  // Using C-style string for simplicity in the union
 };
 
-class Item: public Entity {
+class Item: public QObject, public Entity {
+    Q_OBJECT
+    Q_PROPERTY(QString imageName READ getImage CONSTANT)
+    Q_PROPERTY(QString name READ getName CONSTANT)
+    Q_PROPERTY(QString description READ getDescription CONSTANT)
 
 public:
     explicit Item(string name, string description, string imageName) : Entity(name, description){
         this->imageName = QString::fromStdString("qrc:/qt/qml/content/images/" + imageName);
     }
-    virtual ~Item() override {
 
+    Item(const Item& item) : Entity(item.name, item.description){
+        this->imageName = item.imageName;
     }
-    string getName() const { return name;}
-    string getDescription() const { return description;}
+
+
+    virtual ~Item() override = default;
+    QString getName() const { return QString::fromStdString(name);}
+    QString getDescription() const { return QString::fromStdString(description);}
+
     // Pure virtual functions
     virtual void use() = 0;
     virtual int getProperty() = 0;
+    QString getImage() const { return imageName; }
 
-private:
+signals:
+    void nameChanged();
+
+protected:
     QString imageName;
+
+
 };
+

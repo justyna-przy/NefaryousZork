@@ -1,0 +1,28 @@
+# Ignore CMake build folders
+cmake-build-debug/
+cmake-build-release/
+
+
+*.o
+*.a
+
+# Ignore temporary files, backup files, etc
+*~
+*.swp
+
+
+# Exclude any executable files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Exclude IDE-specific files and directories
+/.idea/
+*.pro.user
+*.workspace
+
+# Exclude OS-specific system files
+.DS_Store
+Thumbs.db
+desktop.ini

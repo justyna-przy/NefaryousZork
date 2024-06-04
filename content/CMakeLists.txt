@@ -11,4 +11,26 @@ qt6_add_qml_module(content
         Screen01.ui.qml
     RESOURCES
         fonts/fonts.txt
+        fonts/gothic.ttf
+        images/pxArt.png
+        images/cat.jpg
+        images/sword.png
+        images/church.png
+        images/entancetobridge.png
+        images/forrestenter.png
+        images/alterroom.png
+        images/axe.png
+        images/castleentrance.png
+        images/churchentrance.png
+        images/dagger.png
+        images/bedroom.jpeg
+        images/library.jpeg
+        images/hallway.jpeg
+        images/castlefront.jpeg
+        images/catacombentrance.jpeg
+        images/catacombhallway.jpeg
+        images/undergroundentrance.jpeg
+        images/hearts.png
+        images/key.png
+
 )

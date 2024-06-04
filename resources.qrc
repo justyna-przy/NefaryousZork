@@ -2,5 +2,24 @@
 <qresource>
     <file>content/images/pxArt.png</file>
     <file>content/images/cat.jpg</file>
+    <file>content/images/sword.png</file>
+    <file>content/images/axe.png</file>
+    <file>content/images/church.png</file>
+    <file>content/images/forrestenter.png</file>
+    <file>content/images/alterroom.png</file>
+    <file>content/fonts/gothic.ttf</file>
+    <file>content/images/entancetobridge.png</file>
+    <file>content/images/key.png</file>
+    <file>content/images/castleentrance.png</file>
+    <file>content/images/churchentrance.png</file>
+    <file>content/images/hearts.png</file>
+    <file>content/images/dagger.png</file>
+    <file>content/images/bedroom.jpeg</file>
+    <file>content/images/library.jpeg</file>
+    <file>content/images/hallway.jpeg</file>
+    <file>content/images/castlefront.jpeg</file>
+    <file>content/images/catacombentrance.jpeg</file>
+    <file>content/images/catacombhallway.jpeg</file>
+    <file>content/images/catacombhallway.jpeg</file>
 </qresource>
 </RCC>
