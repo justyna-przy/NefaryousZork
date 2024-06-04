@@ -43,6 +43,10 @@ qt_add_executable(NefaryousGameApp src/Controller/main.cpp
         src/Model/Player.h
         src/Model/Key.h
         src/Model/Key.cpp
+        src/Model/Interactable.h
+        src/Model/Potion.h
+        src/Model/Potion.cpp
+        src/Model/Enums.h
 )
 
 qt_add_resources(NefaryousGameApp "configuration"

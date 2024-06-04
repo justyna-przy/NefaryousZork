@@ -3,7 +3,7 @@
 #include <memory>
 #include <thread>
 #include "Game.h"
-#include "../Model/Weapon.h"
+#include "../Model/Interactable.h"
 
 Game::Game(QObject *parent) : QObject(parent), currentRoom(nullptr)
 {
@@ -12,38 +12,65 @@ Game::Game(QObject *parent) : QObject(parent), currentRoom(nullptr)
 }
 
 
-// Add a room to the game
+
 void Game::addRoom(const QString &name, Room *room) {
     rooms.insert(name, room);
 }
 
-// Set the current room
+
 void Game::setCurrentRoom(Room *room) {
     if (currentRoom != room) {
         currentRoom = room;
-        emit currentRoomChanged();  // Notify that the current room has changed
-        addToGameLog(room->getDescription());  // Log the room change
+        emit currentRoomChanged();
+        addToGameLog(room->getDescription());
     }
 }
 
-// Move to a specified room by name
+
 void Game::moveToRoom(Room *room) {
-    qDebug() << "Moving to room:" << room->getDescription();
+    qInfo() << room->name;
+    qInfo() << currentRoom->name;
+
+    Exit* roomExit;
+    for(Exit* exit: currentRoom->exits) {
+        if(exit->getDestination() == room) {
+            roomExit = exit;
+            qInfo() << roomExit->getName();
+        }
+    }
+
+    if(roomExit->isLocked()) {
+        QString message = "The " + roomExit->getName() + " is locked!";
+        addToGameLog(message);
+
+        Key* key = playerGetKey();
+        if(!key) {
+            addToGameLog("You check your inventory for a key, but find none");
+            emit gameLogChanged();
+            return;
+        }
+        else {
+            addToGameLog("You check your inventory for a key, and find it. You use this key to unlock the room.");
+            roomExit->unlock();
+            key->use();
+            inventory.removeUsedKeys();
+        }
+    }
     setCurrentRoom(room);
+    emit gameLogChanged();
     emit currentRoomChanged();
     emit resetUIState();
 }
 
-// Add a message to the game log
+
 void Game::addToGameLog(const QString &message) {
     gameLog += message + "\n";
-    emit gameLogChanged();  // Notify that the game log has changed
+    emit gameLogChanged();
 }
 
 
 void Game::pickUpItem(const QString &itemName) {
     auto &items = currentRoom->roomItems;
-
     auto it = std::find_if(items.begin(), items.end(), [&](const QPointer<Item> &item) {
         return item && item->getName() == itemName;
     });
@@ -59,11 +86,12 @@ void Game::pickUpItem(const QString &itemName) {
 }
 
 
+
 void Game::checkRoomForItems() {
     if (currentRoom->roomItems.isEmpty()) {
         addToGameLog("There are no items in this room.");
     } else {
-        // auto tells the compiler to deduce the type of the variable from its initializer
+        // auto tells the compiler to deduce the potionType of the variable from its initializer
         for (const auto &roomItem : currentRoom->roomItems) {
             addToGameLog(roomItem->getDescription());
         }
@@ -90,23 +118,53 @@ void Game::cloningSpell(Key &key) {
     weapon->use();
     emit gameLogChanged();
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
     // Once you make the sacrifice, the spell is activated.
     std::shared_ptr<Item> clone = std::make_shared<Key>(key);
     inventory.addItem(clone);
+    emit inventoryChanged();
 }
 
-Weapon* Game::playerGetWeapon(){
+Weapon* Game::playerGetWeapon() {
     for (int i = 0; i < inventory.count(); ++i) {
-        Item* item = dynamic_cast<Item*>(inventory.getItem(i));
-        if (item) {
-            Weapon* weapon = dynamic_cast<Weapon*>(item);
-            return weapon;
+        QObject* obj = inventory.getItem(i);
+        Item* item = qobject_cast<Item*>(obj);
+        if (item && item->getType() == WEAPON) {
+            qDebug() << "Weapon found: " << item->getName();
+            return qobject_cast<Weapon*>(item);
         }
     }
-
+    qDebug() << "No weapon found in inventory.";
+    return nullptr;
 }
+
+Key* Game::playerGetKey() {
+    for (int i = 0; i < inventory.count(); ++i) {
+        QObject* obj = inventory.getItem(i);
+        Item* item = qobject_cast<Item*>(obj);
+        if (item && item->getType() == KEY) {
+            return qobject_cast<Key*>(item);
+        }
+    }
+    return nullptr;
+}
+
+QVector<Potion*> Game::getPotions() {
+    QVector<Potion*> foundPotions;
+
+
+    for (int i = 0; i < inventory.count(); ++i) {
+        QObject* obj = inventory.getItem(i);
+        Item* item = qobject_cast<Item*>(obj);
+        if (item && item->getType() == POTION) {
+            Potion* potion = dynamic_cast<Potion*>(item);
+            if (potion) {
+                foundPotions.append(potion);
+            }
+        }
+    }
+    return foundPotions;
+}
+
 
 
 
@@ -121,7 +179,12 @@ void Game::initRooms() {
     Room* catacombHallway = new Room("Catacombs", "As you turn the corner, you see just how far these catacombs stretch out. Your stomach sinks and the smell makes you feel sick. Do you turn back or keep going?", "catacombhallway.jpeg", this);
     Room* catacombExit = new Room("End of the Catacombs", "You push through the catacombs. With each step, the hairs on your neck stand taller. After some time, you reach an ominous door. Open the door?", "undergroundentrance.jpeg", this);
     Room* castleEntrance = new Room("Castle Entrance Room", "Upon opening the door, you find yourself in a grand room. This room looks like its been abandoned for centuries. Cracks have begun to form in the magnificent windows. There appears to be a hallway up the stairs.", "castleentrance.png", this);
-//    Room* castleHallway = new Room("Castle Hallway", "")
+    Room* castleHallway = new Room("Castle Hallway", "You begin walking through the hallway. The painting on the wall seem to be watching. There are three doors here, but one of them is boarded up. The other two are opposite to each other.", "hallway.jpeg", this);
+    Room* bedroom = new Room("Master Bedroom", "You push the door open to find what was once an elegant bedroom. Light shines onto the dusty bed from the massive windows. All the furniture and sheets are torn apart.", "bedroom.jpeg", this);
+    Room* library = new Room("The Library", "You find yourself in awe when you open the door. There stands the biggest library you have ever seen. Compared to the other rooms, this one is not quite as trashed, but the years of neglect remain apparent with the layer of dust", "library.jpeg", this);
+    Room* stairs = new Room("The Stairwell", "When you enter the small room, you find a spiral staircase in the middle. You look down and it appears as if a glow is coming from the room below.", "stairwell.jpeg", this);
+    Room* portalRoom = new Room("The Portal Room", "...... There is a portal. Its so bright and mesmerizing. You are drawn closer and closer, but should you step inside?", "portalroom.jpeg", this);
+    Room* alter = new Room("The Alter", "The moonlight shines onto its the alter. Your mind feels calm, but you feel the sudden urge to hold a blade.. ", "alter.jpeg", this);
 
     Exit* bridgeToCastle = new Exit("Crumbling Bridge", "A crumbling stone bridge", bridgeEntrance, frontOfCastle, false);
     Exit* bridgeToForrest = new Exit("Forest path", "A tall grim forest with a dark path", bridgeEntrance, forestEntrance, false);
@@ -134,16 +197,27 @@ void Game::initRooms() {
     Exit* alterToCatacombs = new Exit("Dimly lit doorway", "A doorway leading to dark and twisted catacombs.", alterRoom, catacombEntrance, false);
     Exit* catacombsToAlter = new Exit("Way back to the Alter Room", "The path leading back to the unsettling alter room.", catacombEntrance, alterRoom, false);
     Exit* catacombEntranceToHallway = new Exit("Deeper into the Catacombs", "A narrow passage that leads deeper into the darkness of the catacombs.", catacombEntrance, catacombHallway, false);
+    Exit* catacombHallwayToExit = new Exit("Keep Going", "The catacomb tunnel stretches even further", castleHallway, catacombExit, false);
     Exit* catacombHallwayToEntrance = new Exit("Go Back!", "The path leading back to the entrance of the catacombs.", catacombHallway, catacombEntrance, false);
-    Exit* hallwayToCatacombExit = new Exit("Ominous Door", "The ominous door at the end of the catacombs.", catacombHallway, catacombExit, false);
-    Exit* catacombExitToHallway = new Exit("Back to the Catacombs", "The path leading back to the catacombs.", catacombExit, catacombHallway, false);
+    Exit* catacombExitToHallway= new Exit("Ominous Door", "The ominous door at the end of the catacombs.", catacombExit, castleHallway, false);
+    Exit* backToCatacombs = new Exit("Back to the Catacombs", "The path leading back to the catacombs.", catacombExit, catacombHallway, false);
+    Exit* castleToEntrance = new Exit("Castle doors", "A pair of mighty carved doors", frontOfCastle, castleEntrance, true);
+    Exit* entranceToHallway = new Exit("Hallway", "The hallway at the end of the entrance", castleEntrance, castleHallway, false);
+    Exit* hallwayToBedroom = new Exit("Right Door", "A plain wooden door", castleHallway, bedroom, false);
+    Exit* hallwayToLibrary = new Exit("Left Door", "A plain wooden door", castleHallway, library, false);
+    Exit* libraryToStairs = new Exit("Small Door", "A small door at the back of the library", library, stairs, false);
+    Exit* stairsToPortal = new Exit("Glowing room", "A faint glow coming from the room below", stairs, portalRoom, false);
+    Exit* entranceToCastle = new Exit("Castle doors", "The path leading back to the Castle Entrance Room", castleHallway, castleEntrance, false);
+    Exit* bedroomToHallway = new Exit("Back to the Hallway", "The door leading back to the Castle Hallway", bedroom, castleHallway, false);
+    Exit* libraryToHallway = new Exit("Back to the Hallway", "The door leading back to the Castle Hallway", library, castleHallway, false);
+    Exit* stairsToLibrary = new Exit("Back to the Library", "The door leading back to the Library", stairs, library, false);
+    Exit* portalToStairs = new Exit("Back to the Stairwell", "The glowing exit leading back to the Stairwell", portalRoom, stairs, false);
+    Exit* roomToAlter = new Exit("Go to Alter", "Its calling", alterRoom, alter, false);
+    Exit* backFromAlter = new Exit("Step Back", "Its calling", alter, alterRoom, false);
 
-
-
-    catacombHallway->addExit(hallwayToCatacombExit);
+    catacombHallway->addExit(catacombHallwayToExit);
+    catacombExit->addExit(backToCatacombs);
     catacombExit->addExit(catacombExitToHallway);
-
-
     bridgeEntrance->addExit(bridgeToForrest);
     bridgeEntrance->addExit(bridgeToCastle);
     forestEntrance->addExit(forestToBridge);
@@ -156,22 +230,39 @@ void Game::initRooms() {
     catacombEntrance->addExit(catacombsToAlter);
     catacombEntrance->addExit(catacombEntranceToHallway);
     catacombHallway->addExit(catacombHallwayToEntrance);
+    frontOfCastle->addExit(castleToEntrance);
+    castleEntrance->addExit(entranceToHallway);
+    castleHallway->addExit(hallwayToBedroom);
+    castleHallway->addExit(hallwayToLibrary);
+    bedroom->addExit(bedroomToHallway);
+    library->addExit(libraryToStairs);
+    stairs->addExit(stairsToPortal);
+    portalRoom->addExit(portalToStairs);
+    castleEntrance->addExit(entranceToCastle);
+    library->addExit(libraryToHallway);
+    stairs->addExit(stairsToLibrary);
+    alterRoom->addExit(roomToAlter);
+    alter->addExit(backFromAlter);
 
 
-
-    Weapon* dagger = new Weapon("Mysterious Dagger", "A Mysterious Dagger lies on the ground in front of you", 3, "dagger.png");
+    Weapon* dagger = new Weapon("Mysterious Dagger", "A Mysterious Dagger lies on the ground in front of you", 15, "dagger.png");
     Key* key = new Key("Rustic Key", "An antique looking key", "key.png");
+    Key* key2 = new Key("Rustic Key", "An antique looking key", "key.png");
+    Potion* healingPotion = new Potion("Purple Potion", "A glistening purple potion",  10, "healingpotion.png", HEALING);
+    Potion* damagePotion = new Potion("Green Potion", "An ominous potion", 25, "deathpotion.png", DAMAGING);
+
+    bridgeEntrance->addItem(dagger);
+    forestEntrance->addItem(key);
+    catacombExit->addItem(damagePotion);
+    bedroom->addItem(healingPotion);
+
 
     inventory.addItem(dagger);
-    inventory.addItem(key);
 
-//    bridgeEntrance->addItem(dagger);
-//    forestEntrance->addItem(key);
-
+    Interactable* alterSpell = new Interactable("Use Alter", "Use the alter to perform a cloning spell");
+    alter->setInteractable(alterSpell);
     setCurrentRoom(bridgeEntrance);
 
     emit inventoryChanged();
-
-    cloningSpell(*key);
 }
 

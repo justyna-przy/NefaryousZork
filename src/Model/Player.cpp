@@ -21,6 +21,20 @@ void Player::receiveDamage(int amount) {
     emit healthChanged();
 }
 
+void Player::heal(int amount) {
+    if (amount < 0) {
+        return;
+    }
+
+    int newHealth = health.current + amount;
+    if (newHealth > 255) {
+        newHealth = 255;
+    }
+
+    health.current = newHealth;
+    emit healthChanged();
+}
+
 
 void Player::setCurrentHealth(int newHealth) {
     if (newHealth < 0) {

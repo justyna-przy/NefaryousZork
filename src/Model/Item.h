@@ -3,6 +3,7 @@
 #include <QObject>
 #include "Entity.h"
 #include "Exit.h"
+#include "Enums.h"
 
 union ItemProperty {
     int damage;
@@ -25,13 +26,13 @@ public:
         this->imageName = item.imageName;
     }
 
-
     virtual ~Item() override = default;
     QString getName() const { return QString::fromStdString(name);}
     QString getDescription() const { return QString::fromStdString(description);}
+    virtual ItemType getType()  { return type; }
 
     // Pure virtual functions
-    virtual void use() = 0;
+    Q_INVOKABLE virtual void use() = 0;
     virtual int getProperty() = 0;
     QString getImage() const { return imageName; }
 
@@ -41,6 +42,8 @@ signals:
 protected:
     QString imageName;
 
+private:
+    ItemType type;
 
 };
 

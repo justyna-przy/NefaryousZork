@@ -5,9 +5,12 @@
 #include <vector>
 #include <QObject>
 
+class Interactable;
+
 using namespace std;
 class Exit;
 class Item;
+class Interactable;
 
 // QObject must be first base class
 // Determines the order in which constructors and destructors are called
@@ -17,6 +20,7 @@ class Room : public QObject, public Entity {
     Q_PROPERTY(QString description READ getDescription CONSTANT)
     Q_PROPERTY(QVector<QObject*> exits READ getExits NOTIFY exitsChanged)
     Q_PROPERTY(QVector<QObject*> roomItems READ getRoomItems NOTIFY roomItemsChanged)
+    Q_PROPERTY(Interactable* interactable READ getInteractable CONSTANT)
     Q_PROPERTY(QString roomImage READ getImage CONSTANT)
 
 
@@ -27,8 +31,10 @@ public:
     QString getDescription() const { return QString::fromStdString(description);}
     void addExit(Exit* exit);
     void addItem(Item* item);
+    void setInteractable(Interactable* interactable);
     QVector<QObject*> getExits() const; // const prevents modification to the original vector
-    QVector<QObject*> getRoomItems(); // const prevents modification to the original vector
+    QVector<QObject*> getRoomItems();
+    Interactable* getInteractable();
     QString getImage() const { return roomImage; }
 
     friend class Game;
@@ -36,6 +42,7 @@ private:
     // Automatically nullifies pointers if the pointed-to Exit objects are deleted elsewhere
     QVector<QPointer<Exit>> exits;
     QVector<QPointer<Item>> roomItems;
+    Interactable* interactable;
     QString roomImage;
 
 signals:

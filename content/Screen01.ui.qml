@@ -55,7 +55,7 @@ Rectangle {
         columns: 2
 
         Repeater {
-            model: 4  // Four placeholders for the four grid slots
+            model: 4
             delegate: Rectangle {
                 width: 300
                 height: 45
@@ -78,14 +78,19 @@ Rectangle {
         columns: 2
 
         Repeater {
-            model: actionState === "main" ? ["Leave Room", "Pick up Item", "Fight Enemy", "Use Item"] :
-                ["Back"].concat(actionState === "exits" ? exitsList :
-                        actionState === "items" ? game.currentRoom.roomItems : [])
+            model:  actionState === "main" ? ["Leave Room", "Pick up Item", "Interact with Room", "Use Item"] :
+                    actionState === "exits" ? ["Back"].concat(exitsList) :
+                        actionState === "items" ? ["Back"].concat(game.currentRoom.roomItems) :
+                            actionState === "useItems" ? ["Back"].concat(game.potions) : []
+
             delegate: Button {
-                text:   modelData === "Back" ? "Back" :
+                text: modelData === "Back" ? "Back" :
                         actionState === "main" ? modelData :
-                        actionState === "exits" ? modelData.name :
-                        actionState === "items" ? modelData.name : "Undefined"
+                            actionState === "exits" ? modelData.name :
+                                actionState === "interact" ? modelData.name :
+                                    actionState === "items" ? modelData.name :
+                                        actionState === "useItems" ? modelData.name : "Undefined"
+
                 onClicked: {
                     if (modelData === "Back") {
                         actionState = "main";
@@ -95,12 +100,26 @@ Rectangle {
                         } else if (modelData === "Pick up Item") {
                             game.checkRoomForItems();
                             actionState = "items";
+                        } else if (modelData === "Use Item") {
+                            actionState = "useItems";
+                        } else if (modelData === "Interact with Room") {
+                            if (game.currentRoom.interactable) {
+                                game.currentRoom.interactable.interact();
+                                game.addToGameLog("Under the eerie moonlight, you place the key on the ancient altar. The shadows around you seem to stir slightly as the key touches the stone surface.");
+                                game.addToGameLog("You gently slice the blade across your finger and blood starts dripping out.");
+                                game.addToGameLog("You look back up onto the alter an see an exact replica of the key you just placed");
+                            } else {
+                                game.addToGameLog("There is nothing to interact with here");
+                            }
                         }
                     } else if (actionState === "exits") {
                         game.moveToRoom(modelData.destination);
                         actionState = "main";
                     } else if (actionState === "items") {
                         game.pickUpItem(modelData.name);
+                        actionState = "main";
+                    } else if (actionState === "useItems") {
+                        modelData.use();
                         actionState = "main";
                     }
                 }
@@ -109,7 +128,7 @@ Rectangle {
                 font.family: gothic.name
                 font.pointSize: 20
                 background: Rectangle {
-                    color: modelData === "Back" ? "#b13e53" : "#9e1266"  // Red for back, different color for others
+                    color: modelData === "Back" ? "#b13e53" : "#9e1266"
                     radius: 3
                 }
             }

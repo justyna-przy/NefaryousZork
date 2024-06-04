@@ -21,6 +21,3 @@ int Key::getProperty() {
     return used;
 }
 
-void Key::keyUsed() {
-
-}

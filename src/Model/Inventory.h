@@ -30,14 +30,14 @@ public:
     }
 
 
-    Q_INVOKABLE QObject* getItem(int index) const override {
-        if (index >= 0 && index < items.size()) {
+    Q_INVOKABLE QObject* getItem(int index) const {
+        if (index >= 0 && index < static_cast<int>(items.size())) {
             return dynamic_cast<QObject*>(items[index].get());
         }
         return nullptr;
     }
 
-    int count() const override { return items.size(); }
+    int count() override { return items.size(); }
 
     std::shared_ptr<T> removeItem(const std::shared_ptr<T>& item) {
         // auto is used to automatically determine the type of the variable

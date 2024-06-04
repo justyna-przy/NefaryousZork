@@ -4,7 +4,7 @@
 
 
 Exit::Exit(std::string name, std::string description, Room *origin, Room *destination, bool locked) :
-    Entity(name, description),
+    Entity(name, description), locked(locked),
     origin(origin), destination(destination)
 {
     type = EXIT;

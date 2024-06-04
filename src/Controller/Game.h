@@ -6,7 +6,7 @@
 #include "../Model/Inventory.h"
 #include "../Model/Player.h"
 #include "../Model/Weapon.h"
-
+#include "../Model/Potion.h"
 
 
 class Game : public QObject {
@@ -15,8 +15,7 @@ class Game : public QObject {
     Q_PROPERTY(Room* currentRoom READ getCurrentRoom NOTIFY currentRoomChanged)
     Q_PROPERTY(ItemInventory* inventory READ getInventory CONSTANT)
     Q_PROPERTY(Player* player READ getPlayer CONSTANT)
-
-
+    Q_PROPERTY(QVector<Potion*> potions READ getPotions NOTIFY inventoryChanged)
 
 public:
     // Use explicit to avoid unintended conversions from QObject to Game object
@@ -26,17 +25,21 @@ public:
     Room* getCurrentRoom() const { return currentRoom; }
     void addRoom(const QString &name, Room *room);
     void setCurrentRoom(Room *room);
-    void addToGameLog(const QString &message);
+    Q_INVOKABLE void addToGameLog(const QString &message);
     ItemInventory* getInventory() { return &inventory; }
     Player* getPlayer() const { return &Player::instance();}
     void cloningSpell(Key &key);
     Weapon* playerGetWeapon();
+    Key* playerGetKey();
+    QVector<Potion*> getPotions();
+
 
 private:
     QMap<QString, Room*> rooms;
     Room *currentRoom;
     QString gameLog;
     ItemInventory inventory;
+    QVector<Potion*> potions;
 
 signals:
     void gameLogChanged();

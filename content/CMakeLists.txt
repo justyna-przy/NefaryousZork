@@ -32,5 +32,10 @@ qt6_add_qml_module(content
         images/undergroundentrance.jpeg
         images/hearts.png
         images/key.png
+        images/deathpotion.png
+        images/healingpotion.png
+        images/stairwell.jpeg
+        images/portalroom.jpeg
+        images/alter.jpeg
 
 )

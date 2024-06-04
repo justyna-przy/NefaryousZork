@@ -7,7 +7,6 @@ enum EntityType {
     ENTITY,
     EXIT,
     ITEM,
-    DEMON,
     ROOM,
 };
 

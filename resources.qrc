@@ -10,6 +10,8 @@
     <file>content/fonts/gothic.ttf</file>
     <file>content/images/entancetobridge.png</file>
     <file>content/images/key.png</file>
+    <file>content/images/deathpotion.png</file>
+    <file>content/images/healingpotion.png</file>
     <file>content/images/castleentrance.png</file>
     <file>content/images/churchentrance.png</file>
     <file>content/images/hearts.png</file>
@@ -21,5 +23,7 @@
     <file>content/images/catacombentrance.jpeg</file>
     <file>content/images/catacombhallway.jpeg</file>
     <file>content/images/catacombhallway.jpeg</file>
+    <file>content/images/stairwell.jpeg</file>
+    <file>content/images/portalroom.jpeg</file>
 </qresource>
 </RCC>

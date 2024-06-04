@@ -3,15 +3,12 @@
 #include <utility>
 #include "Room.h"
 #include <qdebug.h>
-//#include <QString>
-//#include <QMap>
-//#include <QPixmap>
 
 
 
 Room::Room(string name, string description, string imageName, QObject *parent = nullptr) : QObject(parent),
     // Moving it to the entity constructor instead of copying it!
-    Entity(std::move(name), std::move(description))
+    Entity(std::move(name), std::move(description)), interactable(nullptr)
 {
     this->roomImage = QString::fromStdString("qrc:/qt/qml/content/images/" + imageName);
     this->type = ROOM;
@@ -34,6 +31,9 @@ void Room::addItem(Item *item) {
     emit roomItemsChanged();
 }
 
+void Room::setInteractable(Interactable* interactable){
+    this->interactable = interactable;
+}
 
 QVector<QObject*> Room::getExits() const {
     QVector<QObject*> list;
@@ -53,4 +53,8 @@ QVector<QObject*> Room::getRoomItems() {
         }
     }
     return list;
+}
+
+Interactable* Room::getInteractable() {
+    return interactable;
 }

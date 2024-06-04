@@ -12,7 +12,7 @@ class InventoryBase : public QObject {
 public:
     explicit InventoryBase(QObject *parent = nullptr) : QObject(parent) {}
     virtual ~InventoryBase() {}
-    virtual int count() const = 0;
+    virtual int count() = 0;
     Q_INVOKABLE virtual QObject* getItem(int index) const = 0;
 
 signals:

@@ -19,9 +19,11 @@ public:
     QString getDescription() const { return QString::fromStdString(description);}
     Room* getDestination() const { return destination; }
     Room* getOrigin() const { return origin; }
-    bool locked;
+    bool isLocked() { return locked; }
+    void unlock() { locked = false; }
 
 private:
     QPointer<Room> origin;
     QPointer<Room> destination;
+    bool locked;
 };

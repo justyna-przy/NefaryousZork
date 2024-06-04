@@ -5,6 +5,7 @@
 
 Weapon::Weapon(string name, string description, int damage, string itemName) : Item(name, description, itemName), damage(damage)
 {
+
 }
 
 
